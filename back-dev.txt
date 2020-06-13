@@ -1,0 +1,89 @@
++----------------------------------------------------------------------------------------------------------------------+
+* 참고
+>> https://bezkoder.com/spring-boot-vue-js-authentication-jwt-spring-security
+   (https://github.com/bezkoder/spring-boot-spring-security-jwt-authentication)
+>> https://bezkoder.com/jwt-vue-vuex-authentication
+   https://bezkoder.com/react-jwt-auth
+   (https://github.com/bezkoder/vue-vuex-jwt-auth)
+   (https://github.com/bezkoder/react-jwt-auth)
++----------------------------------------------------------------------------------------------------------------------+
+* JWT(Json Web Token)
+>> 구조: 헤더, 페이로드, 서명의 표준 구조로 결합된다.
+   (Authorization: Bearer [header].[payload].[signature])
+   (헤더: 토큰을 설명하는 데이터)
+   (페이로드: 토큰의 권한 데이터)
+   (서명: 토큰의 무결성을 검증하기 위한 해시)
+
+>> 방식: 인증 및 정보 교환에 사용한다.
+   1. 서버는 데이터를 JWT로 인코딩하여 클라이언트로 전달한다.
+   2. 클라이언트는 JWT를 저장한 후, 접근이 보호된 라우트 및 자원에 요청을 보낼 때 JWT를 헤더에 포함한다.
+   3. 서버는 해당 JWT를 확인하고 응답을 전달한다.
+
+>> 장점: JWT(토큰 기반 인증)은 클라이언트에 토큰을 저장한다.
+   (세션 기반 인증은 쿠키에 세션을 저장한다.)
+
+>> 참고: https://medium.com/@OutOfBedlam/jwt-자바-가이드-53ccd7b2ba10, https://galid1.tistory.com/588
++----------------------------------------------------------------------------------------------------------------------+
+* Spring Security
+>> 인증과 권한을 분리하여 검사할 수 있는 구조를 갖는다.
+
+* 인증(Authentication)
+>> A라고 주장하는 주체(user, subject, principal)가 A가 맞는지 확인하는 것이다.
+>> 코드 상에서 Authentication은 인증 과정에 사용하는 핵심 객체이다.
+   (ID/PW, JWT, OAuth 등 여러 방식으로 인증에 필요한 값이 전달되는데
+   이것을 하나의 인터페이스로 받아 수행하도록 추상화 하는 역할의 인터페이스이다.)
+
+* 권한(Authorization)
+>> 특정 자원에 대한 권한이 있는지 확인하는 것이다.
+   (인증 수행 후, 권한 여부를 확인하여 서버 자원에 접근을 허용하는 것이다.)
+
+* 증명(Credential)
+>> 인증 과정에서 주체가 본인 인증을 위해 서버에 제공하는 것이다.
+   (ID/PW, Key 등)
+
+* 스프링 시큐리티 필터 체인
+>> 보안과 관련된 여러 필터 목록을 갖고 있는 객체이다.
+   (필터 목록을 순회하면서 필터링을 수행한다.)
+
+>> 참고: https://jeong-pro.tistory.com/205
++----------------------------------------------------------------------------------------------------------------------+
+* SecurityContext 객체
+>> 스프링 시큐리티는 세션을 통해 사용자 인증 정보를 직접 관리하지 않고 추상화된 SecurityContext 객체로 관리한다.
+>> SecurityContext 객체를 가져올 때, 정적 메소드를 사용한다.
+   (ThreadLocal 방식을 사용하기 때문에 멀티스레드 환경에서도 인증 정보가 섞이지 않는다.)
+
+>> 참고: https://brunch.co.kr/@sbcoba/11, https://brunch.co.kr/@sbcoba/12
++----------------------------------------------------------------------------------------------------------------------+
+* AOP(Aspect Oriented Programming)
+>> 핵심 비즈니스 기능과 공통 기능으로 구분하고
+   공통 기능을 개발자의 코드 밖에서 필요한 시점에 적용하는 프로그래밍 방법이다.
+
+* Proxy
+>> AOP는 메소드를 가로채는데 이 행위를 Proxy라 한다.
+
+* @EnableAspectJAutoProxy
+>> 개발자의 메소드를 호출하기 전에 스프링이 자동으로 가로챌 수 있도록 하는 옵션이다. (메인 클래스에 위치한다.)
+
+* @Aspect, @Componet
+>> 공통 기능이 될 클래스를 컴포넌트로 지정함과 동시에 AOP가 바라보는 관점으로 정의한다.
+
+* 공통 기능 실행 시점
+>> @Around(메소드 실행 전/후에 공통 로직 적용) -> proceed() 메소드 호출 필수
+>> @Before(메소드 실행 전에 공통 로직 적용)
+>> @After(메소드 실행 후에 공통 로직 적용)
+>> @AfterReturning(정상적 반환 이후)
+>> @AfterThrowing(예외 발생 이후)
+
+>> 참고: https://jeong-pro.tistory.com/171, https://devjms.tistory.com/70, https://jojoldu.tistory.com/71
++----------------------------------------------------------------------------------------------------------------------+
+* schema.sql, data.sql 자동 실행
+>> yml: spring.datasource.initialization-mode=always 추가
+
+* MariaDB에서 조회 시 값이 없을 경우에만 INSERT
+>> INSERT INTO 테이블명 (컬럼1, 컬럼2)
+   SELECT '값1', '값2' FROM dual
+   WHERE NOT EXISTS (SELECT 컬럼1, 컬럼2 FROM 테이블명 WHERE 컬럼1='값1' AND 컬럼2='값2');
+
+>> 참고: https://stackoverflow.com/questions/1361340/how-to-insert-if-not-exists-in-mysql,
+         http://do0park.blog.me/40134359319
++----------------------------------------------------------------------------------------------------------------------+
